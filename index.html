@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Poker Room - Demo</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo">
+      <span class="logo-icon">♠</span>
+      <span class="logo-text">PokerRoom Demo</span>
+    </div>
+    <nav class="topbar-nav">
+      <a href="#" class="nav-link active">Mesa</a>
+      <a href="#" class="nav-link">Lobby</a>
+      <a href="#" class="nav-link">Perfil</a>
+    </nav>
+    <div class="user-info">
+      <span class="user-name">Jugador Demo</span>
+      <span class="user-balance">$ 10,000</span>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- Panel lateral izquierdo: info de la mesa -->
+    <aside class="sidebar left">
+      <h2 class="sidebar-title">Mesa #12</h2>
+      <div class="sidebar-card">
+        <p><strong>Modalidad:</strong> Texas Hold'em</p>
+        <p><strong>Ciegas:</strong> $50 / $100</p>
+        <p><strong>Jugadores:</strong> <span id="player-count">6/9</span></p>
+        <p><strong>Bote actual:</strong> <span id="pot-amount">$ 350</span></p>
+      </div>
+
+      <h3 class="sidebar-subtitle">Historial reciente</h3>
+      <ul class="hand-history">
+        <li>Ganó Jugador 3 con color</li>
+        <li>Ganó Jugador 1 con trío</li>
+        <li>Ganó Jugador 5 con par de ases</li>
+      </ul>
+    </aside>
+
+    <!-- Zona central: mesa de póker -->
+    <section class="table-area">
+      <div class="table-oval">
+        <div class="table-pot">
+          <span>Bote</span>
+          <strong id="pot-center">$ 350</strong>
+        </div>
+
+        <div class="board-cards" id="board-cards">
+          <!-- Cartas comunitarias (simuladas) -->
+          <div class="card">A♠</div>
+          <div class="card">K♥</div>
+          <div class="card">10♣</div>
+          <div class="card">7♦</div>
+          <div class="card">2♠</div>
+        </div>
+
+        <!-- Plaza para el dealer button -->
+        <div class="dealer-button" id="dealer-button">D</div>
+
+        <!-- Asientos de jugadores alrededor de la mesa -->
+        <div class="seats">
+          <div class="seat seat-top" id="seat-1">
+            <div class="seat-name">Jugador 1</div>
+            <div class="seat-cards">
+              <div class="card small back"></div>
+              <div class="card small back"></div>
+            </div>
+            <div class="seat-stack">$ 2,100</div>
+          </div>
+
+          <div class="seat seat-top-right" id="seat-2">
+            <div class="seat-name">Jugador 2</div>
+            <div class="seat-cards">
+              <div class="card small back"></div>
+              <div class="card small back"></div>
+            </div>
+            <div class="seat-stack">$ 3,400</div>
+          </div>
+
+          <div class="seat seat-right" id="seat-3">
+            <div class="seat-name">Jugador 3</div>
+            <div class="seat-cards">
+              <div class="card small back"></div>
+              <div class="card small back"></div>
+            </div>
+            <div class="seat-stack">$ 1,250</div>
+          </div>
+
+          <div class="seat seat-bottom-right" id="seat-4">
+            <div class="seat-name">Jugador 4</div>
+            <div class="seat-cards">
+              <div class="card small back"></div>
+              <div class="card small back"></div>
+            </div>
+            <div class="seat-stack">$ 4,000</div>
+          </div>
+
+          <div class="seat seat-bottom" id="seat-hero">
+            <div class="seat-name">Tú</div>
+            <div class="seat-cards">
+              <div class="card small">A♠</div>
+              <div class="card small">A♥</div>
+            </div>
+            <div class="seat-stack">$ 5,600</div>
+          </div>
+
+          <div class="seat seat-bottom-left" id="seat-5">
+            <div class="seat-name">Jugador 5</div>
+            <div class="seat-cards">
+              <div class="card small back"></div>
+              <div class="card small back"></div>
+            </div>
+            <div class="seat-stack">$ 900</div>
+          </div>
+
+          <div class="seat seat-left" id="seat-6">
+            <div class="seat-name">Jugador 6</div>
+            <div class="seat-cards">
+              <div class="card small back"></div>
+              <div class="card small back"></div>
+            </div>
+            <div class="seat-stack">$ 1,800</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Panel lateral derecho: chat y acciones -->
+    <aside class="sidebar right">
+      <h2 class="sidebar-title">Chat de la mesa</h2>
+      <div class="chat-window" id="chat-window">
+        <div class="chat-message system">Bienvenido a la Mesa #12</div>
+        <div class="chat-message"><strong>Jugador 3:</strong> suerte 🍀</div>
+        <div class="chat-message"><strong>Tú:</strong> vamos con todo 😎</div>
+      </div>
+      <form class="chat-input" id="chat-form">
+        <input type="text" id="chat-text" placeholder="Escribe un mensaje..." />
+        <button type="submit">Enviar</button>
+      </form>
+    </aside>
+  </main>
+
+  <!-- Barra de acciones del jugador -->
+  <footer class="action-bar">
+    <div class="action-info">
+      <span>Turno de: <strong id="current-player">Tú</strong></span>
+      <span>Apuesta mínima: <strong>$ 100</strong></span>
+    </div>
+    <div class="action-buttons">
+      <button class="btn btn-secondary" data-action="fold">Retirarse</button>
+      <button class="btn btn-secondary" data-action="check">Pasar</button>
+      <button class="btn btn-primary" data-action="call">Pagar $100</button>
+      <button class="btn btn-accent" data-action="raise">Subir</button>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
