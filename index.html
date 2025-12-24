@@ -1,164 +1,501 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Poker Room - Demo</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Maquinita de Frutas 🍒</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel:#111a33;
+      --panel2:#0f1730;
+      --text:#eaf0ff;
+      --muted:#a9b4d6;
+      --accent:#7c5cff;
+      --good:#43d17a;
+      --bad:#ff4d6d;
+      --gold:#ffd166;
+      --shadow: 0 12px 30px rgba(0,0,0,.35);
+      --radius: 18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background: radial-gradient(1200px 600px at 20% 10%, rgba(124,92,255,.35), transparent 60%),
+                  radial-gradient(900px 600px at 90% 30%, rgba(67,209,122,.22), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+    }
+    .cabinet{
+      width:min(920px, 100%);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: calc(var(--radius) + 8px);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    header{
+      padding:18px 20px;
+      background: linear-gradient(90deg, rgba(124,92,255,.25), rgba(255,209,102,.12), rgba(67,209,122,.18));
+      border-bottom:1px solid rgba(255,255,255,.10);
+      display:flex;
+      gap:14px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px;
+    }
+    .logo{
+      width:44px;height:44px;border-radius:14px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.35), transparent 45%),
+                  linear-gradient(135deg, rgba(124,92,255,.9), rgba(255,209,102,.85));
+      box-shadow: 0 10px 22px rgba(124,92,255,.25);
+      display:grid; place-items:center;
+      font-size:22px;
+    }
+    h1{
+      font-size:18px; margin:0; letter-spacing:.3px;
+    }
+    .sub{
+      margin:2px 0 0; color:var(--muted); font-size:13px;
+    }
+    .stats{
+      display:flex; gap:10px; flex-wrap:wrap;
+      align-items:center; justify-content:flex-end;
+    }
+    .pill{
+      background: rgba(17,26,51,.85);
+      border:1px solid rgba(255,255,255,.10);
+      padding:8px 10px;
+      border-radius: 999px;
+      display:flex; gap:8px; align-items:center;
+      font-size:13px;
+    }
+    .pill b{font-weight:700}
+    main{
+      padding:18px;
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:16px;
+    }
+    @media (max-width: 860px){
+      main{grid-template-columns:1fr}
+    }
+
+    .machine{
+      background: linear-gradient(180deg, rgba(17,26,51,.92), rgba(15,23,48,.92));
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:16px;
+      position:relative;
+      overflow:hidden;
+    }
+    .machine::before{
+      content:"";
+      position:absolute; inset:-120px -120px auto auto;
+      width:260px; height:260px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,209,102,.25), transparent 60%);
+      filter: blur(0px);
+      transform: rotate(20deg);
+      pointer-events:none;
+    }
+
+    .reels{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:12px;
+      padding:10px;
+      border-radius: var(--radius);
+      background: rgba(0,0,0,.25);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .reel{
+      height:160px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.12);
+      display:grid;
+      place-items:center;
+      position:relative;
+      overflow:hidden;
+    }
+    .window{
+      width:100%;
+      height:100%;
+      display:grid;
+      place-items:center;
+      font-size:64px;
+      transform: translateZ(0);
+      user-select:none;
+    }
+    .reel::after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(0,0,0,.40), transparent 25%, transparent 75%, rgba(0,0,0,.40));
+      pointer-events:none;
+    }
+
+    .controls{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      align-items:end;
+    }
+    @media (max-width: 520px){
+      .controls{grid-template-columns:1fr}
+    }
+    label{
+      color:var(--muted);
+      font-size:12px;
+      display:block;
+      margin:0 0 6px;
+    }
+    .row{
+      display:flex; gap:10px; align-items:center;
+      background: rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: 14px;
+      padding:10px 10px;
+    }
+    input[type="range"]{width:100%}
+    .value{
+      min-width:64px;
+      text-align:right;
+      font-variant-numeric: tabular-nums;
+      color:var(--text);
+      font-weight:700;
+    }
+    button{
+      grid-column: 1 / -1;
+      border:0;
+      border-radius: 16px;
+      padding:14px 14px;
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:.2px;
+      cursor:pointer;
+      color:#0b1020;
+      background: linear-gradient(135deg, var(--gold), rgba(124,92,255,.95));
+      box-shadow: 0 12px 26px rgba(124,92,255,.22);
+      transition: transform .08s ease, filter .2s ease;
+    }
+    button:active{transform: translateY(1px)}
+    button:disabled{filter: grayscale(.4) brightness(.8); cursor:not-allowed}
+
+    .msg{
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      color:var(--muted);
+      min-height:44px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      font-size:13px;
+    }
+    .msg .badge{
+      padding:6px 10px;
+      border-radius: 999px;
+      font-weight:800;
+      font-size:12px;
+      color:#0b1020;
+      background: rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.10);
+      color: var(--text);
+    }
+    .badge.win{background: rgba(67,209,122,.18); border-color: rgba(67,209,122,.35); color: #c9ffe0}
+    .badge.lose{background: rgba(255,77,109,.14); border-color: rgba(255,77,109,.30); color: #ffd0da}
+
+    .side{
+      background: linear-gradient(180deg, rgba(17,26,51,.72), rgba(15,23,48,.72));
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:14px;
+    }
+    .side h2{
+      margin:0 0 10px;
+      font-size:14px;
+      letter-spacing:.2px;
+      color:var(--text);
+    }
+    .paytable{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0 8px;
+      font-size:13px;
+      color:var(--muted);
+    }
+    .paytable td{
+      padding:10px 10px;
+      background: rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .paytable td:first-child{border-radius: 12px 0 0 12px}
+    .paytable td:last-child{border-radius: 0 12px 12px 0; text-align:right; font-variant-numeric: tabular-nums}
+    .k{color:var(--text); font-weight:800}
+    .tiny{font-size:12px; color:var(--muted); line-height:1.35}
+    .footer{
+      margin-top:12px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .linkish{
+      color:#cfd8ff;
+      text-decoration:underline;
+      text-underline-offset:3px;
+      cursor:pointer;
+    }
+  </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="logo">
-      <span class="logo-icon">♠</span>
-      <span class="logo-text">PokerRoom Demo</span>
-    </div>
-    <nav class="topbar-nav">
-      <a href="#" class="nav-link active">Mesa</a>
-      <a href="#" class="nav-link">Lobby</a>
-      <a href="#" class="nav-link">Perfil</a>
-    </nav>
-    <div class="user-info">
-      <span class="user-name">Jugador Demo</span>
-      <span class="user-balance">$ 10,000</span>
-    </div>
-  </header>
-
-  <main class="layout">
-    <!-- Panel lateral izquierdo: info de la mesa -->
-    <aside class="sidebar left">
-      <h2 class="sidebar-title">Mesa #12</h2>
-      <div class="sidebar-card">
-        <p><strong>Modalidad:</strong> Texas Hold'em</p>
-        <p><strong>Ciegas:</strong> $50 / $100</p>
-        <p><strong>Jugadores:</strong> <span id="player-count">6/9</span></p>
-        <p><strong>Bote actual:</strong> <span id="pot-amount">$ 350</span></p>
-      </div>
-
-      <h3 class="sidebar-subtitle">Historial reciente</h3>
-      <ul class="hand-history">
-        <li>Ganó Jugador 3 con color</li>
-        <li>Ganó Jugador 1 con trío</li>
-        <li>Ganó Jugador 5 con par de ases</li>
-      </ul>
-    </aside>
-
-    <!-- Zona central: mesa de póker -->
-    <section class="table-area">
-      <div class="table-oval">
-        <div class="table-pot">
-          <span>Bote</span>
-          <strong id="pot-center">$ 350</strong>
-        </div>
-
-        <div class="board-cards" id="board-cards">
-          <!-- Cartas comunitarias (simuladas) -->
-          <div class="card">A♠</div>
-          <div class="card">K♥</div>
-          <div class="card">10♣</div>
-          <div class="card">7♦</div>
-          <div class="card">2♠</div>
-        </div>
-
-        <!-- Plaza para el dealer button -->
-        <div class="dealer-button" id="dealer-button">D</div>
-
-        <!-- Asientos de jugadores alrededor de la mesa -->
-        <div class="seats">
-          <div class="seat seat-top" id="seat-1">
-            <div class="seat-name">Jugador 1</div>
-            <div class="seat-cards">
-              <div class="card small back"></div>
-              <div class="card small back"></div>
-            </div>
-            <div class="seat-stack">$ 2,100</div>
-          </div>
-
-          <div class="seat seat-top-right" id="seat-2">
-            <div class="seat-name">Jugador 2</div>
-            <div class="seat-cards">
-              <div class="card small back"></div>
-              <div class="card small back"></div>
-            </div>
-            <div class="seat-stack">$ 3,400</div>
-          </div>
-
-          <div class="seat seat-right" id="seat-3">
-            <div class="seat-name">Jugador 3</div>
-            <div class="seat-cards">
-              <div class="card small back"></div>
-              <div class="card small back"></div>
-            </div>
-            <div class="seat-stack">$ 1,250</div>
-          </div>
-
-          <div class="seat seat-bottom-right" id="seat-4">
-            <div class="seat-name">Jugador 4</div>
-            <div class="seat-cards">
-              <div class="card small back"></div>
-              <div class="card small back"></div>
-            </div>
-            <div class="seat-stack">$ 4,000</div>
-          </div>
-
-          <div class="seat seat-bottom" id="seat-hero">
-            <div class="seat-name">Tú</div>
-            <div class="seat-cards">
-              <div class="card small">A♠</div>
-              <div class="card small">A♥</div>
-            </div>
-            <div class="seat-stack">$ 5,600</div>
-          </div>
-
-          <div class="seat seat-bottom-left" id="seat-5">
-            <div class="seat-name">Jugador 5</div>
-            <div class="seat-cards">
-              <div class="card small back"></div>
-              <div class="card small back"></div>
-            </div>
-            <div class="seat-stack">$ 900</div>
-          </div>
-
-          <div class="seat seat-left" id="seat-6">
-            <div class="seat-name">Jugador 6</div>
-            <div class="seat-cards">
-              <div class="card small back"></div>
-              <div class="card small back"></div>
-            </div>
-            <div class="seat-stack">$ 1,800</div>
-          </div>
+  <div class="cabinet">
+    <header>
+      <div class="brand">
+        <div class="logo">🎰</div>
+        <div>
+          <h1>Maquinita de Frutas</h1>
+          <div class="sub">Tipo ruleta / tragamonedas — 3 rodillos • monedas • apuesta</div>
         </div>
       </div>
-    </section>
-
-    <!-- Panel lateral derecho: chat y acciones -->
-    <aside class="sidebar right">
-      <h2 class="sidebar-title">Chat de la mesa</h2>
-      <div class="chat-window" id="chat-window">
-        <div class="chat-message system">Bienvenido a la Mesa #12</div>
-        <div class="chat-message"><strong>Jugador 3:</strong> suerte 🍀</div>
-        <div class="chat-message"><strong>Tú:</strong> vamos con todo 😎</div>
+      <div class="stats">
+        <div class="pill">🪙 <span>Saldo:</span> <b id="balance">100</b></div>
+        <div class="pill">🎯 <span>Último premio:</span> <b id="lastWin">0</b></div>
       </div>
-      <form class="chat-input" id="chat-form">
-        <input type="text" id="chat-text" placeholder="Escribe un mensaje..." />
-        <button type="submit">Enviar</button>
-      </form>
-    </aside>
-  </main>
+    </header>
 
-  <!-- Barra de acciones del jugador -->
-  <footer class="action-bar">
-    <div class="action-info">
-      <span>Turno de: <strong id="current-player">Tú</strong></span>
-      <span>Apuesta mínima: <strong>$ 100</strong></span>
-    </div>
-    <div class="action-buttons">
-      <button class="btn btn-secondary" data-action="fold">Retirarse</button>
-      <button class="btn btn-secondary" data-action="check">Pasar</button>
-      <button class="btn btn-primary" data-action="call">Pagar $100</button>
-      <button class="btn btn-accent" data-action="raise">Subir</button>
-    </div>
-  </footer>
+    <main>
+      <section class="machine">
+        <div class="reels" aria-label="Rodillos">
+          <div class="reel"><div class="window" id="r0">🍒</div></div>
+          <div class="reel"><div class="window" id="r1">🍋</div></div>
+          <div class="reel"><div class="window" id="r2">🍉</div></div>
+        </div>
 
-  <script src="js/app.js"></script>
+        <div class="controls">
+          <div>
+            <label for="bet">Apuesta (monedas)</label>
+            <div class="row">
+              <input id="bet" type="range" min="1" max="10" value="2" />
+              <div class="value" id="betVal">2</div>
+            </div>
+          </div>
+
+          <div>
+            <label for="speed">Velocidad</label>
+            <div class="row">
+              <input id="speed" type="range" min="1" max="5" value="3" />
+              <div class="value" id="speedVal">3</div>
+            </div>
+          </div>
+
+          <button id="spinBtn">GIRAR 🎲</button>
+        </div>
+
+        <div class="msg" role="status" aria-live="polite">
+          <div id="message">Inserta apuesta y pulsa <b>GIRAR</b>.</div>
+          <div class="badge" id="badge">Listo</div>
+        </div>
+      </section>
+
+      <aside class="side">
+        <h2>Tabla de pagos</h2>
+        <table class="paytable" aria-label="Tabla de pagos">
+          <tr>
+            <td><span class="k">🍒 🍒 🍒</span> (3 cerezas)</td>
+            <td><span class="k">x 8</span> de la apuesta</td>
+          </tr>
+          <tr>
+            <td><span class="k">🍉 🍉 🍉</span> (3 sandías)</td>
+            <td><span class="k">x 6</span></td>
+          </tr>
+          <tr>
+            <td><span class="k">🍋 🍋 🍋</span> (3 limones)</td>
+            <td><span class="k">x 5</span></td>
+          </tr>
+          <tr>
+            <td><span class="k">🍇 🍇 🍇</span> (3 uvas)</td>
+            <td><span class="k">x 4</span></td>
+          </tr>
+          <tr>
+            <td><span class="k">⭐ ⭐ ⭐</span> (3 estrellas)</td>
+            <td><span class="k">x 12</span></td>
+          </tr>
+          <tr>
+            <td><span class="k">Cualquier 2 iguales</span></td>
+            <td><span class="k">x 2</span></td>
+          </tr>
+        </table>
+
+        <p class="tiny">
+          Regla: pagas la apuesta al girar. Si ganas, cobras según el multiplicador.
+          Si tu saldo llega a 0, puedes reiniciar.
+        </p>
+
+        <div class="footer">
+          <span class="tiny">Tip: Súbelo a GitHub → Settings → Pages → Deploy</span>
+          <span class="linkish" id="resetBtn">Reiniciar saldo</span>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+    // --- Config ---
+    const symbols = ["🍒","🍋","🍉","🍇","⭐","🍎","🍑"];
+    // Pesos (más peso = sale más): frutas comunes, estrella rara
+    const weights = {
+      "🍒": 18, "🍋": 18, "🍉": 14, "🍇": 14, "🍎": 14, "🍑": 12, "⭐": 6
+    };
+    const pay3 = { "🍒": 8, "🍉": 6, "🍋": 5, "🍇": 4, "⭐": 12, "🍎": 4, "🍑": 4 };
+
+    // --- State ---
+    let balance = 100;
+    let spinning = false;
+
+    // --- DOM ---
+    const rEls = [0,1,2].map(i => document.getElementById(`r${i}`));
+    const balanceEl = document.getElementById("balance");
+    const lastWinEl = document.getElementById("lastWin");
+    const bet = document.getElementById("bet");
+    const betVal = document.getElementById("betVal");
+    const speed = document.getElementById("speed");
+    const speedVal = document.getElementById("speedVal");
+    const btn = document.getElementById("spinBtn");
+    const msg = document.getElementById("message");
+    const badge = document.getElementById("badge");
+    const resetBtn = document.getElementById("resetBtn");
+
+    function setBadge(type, text){
+      badge.classList.remove("win","lose");
+      if(type) badge.classList.add(type);
+      badge.textContent = text;
+    }
+
+    function render(){
+      balanceEl.textContent = balance.toString();
+      betVal.textContent = bet.value;
+      speedVal.textContent = speed.value;
+      btn.disabled = spinning || balance < Number(bet.value);
+      if(balance < Number(bet.value) && !spinning){
+        setBadge("lose","Sin saldo");
+        msg.innerHTML = "No tienes monedas suficientes para esa apuesta. Baja la apuesta o reinicia.";
+      }
+    }
+
+    // --- Weighted random ---
+    function weightedPick(){
+      const pool = [];
+      for(const s of symbols){
+        const w = weights[s] ?? 10;
+        for(let i=0;i<w;i++) pool.push(s);
+      }
+      return pool[Math.floor(Math.random()*pool.length)];
+    }
+
+    // --- Spin animation ---
+    function sleep(ms){ return new Promise(res => setTimeout(res, ms)); }
+
+    async function spinReel(el, durationMs, tickMs){
+      const start = performance.now();
+      while(performance.now() - start < durationMs){
+        el.textContent = weightedPick();
+        await sleep(tickMs);
+      }
+      // final symbol
+      const final = weightedPick();
+      el.textContent = final;
+      return final;
+    }
+
+    function calcWin(a,b,c, wager){
+      // 3 iguales
+      if(a===b && b===c){
+        const mult = pay3[a] ?? 4;
+        return wager * mult;
+      }
+      // 2 iguales (cualquier par)
+      if(a===b || a===c || b===c){
+        return wager * 2;
+      }
+      return 0;
+    }
+
+    async function spin(){
+      if(spinning) return;
+      const wager = Number(bet.value);
+      if(balance < wager) return;
+
+      spinning = true;
+      setBadge(null,"Girando");
+      msg.textContent = "Girando… ¡suerte!";
+      lastWinEl.textContent = "0";
+
+      // cobrar apuesta
+      balance -= wager;
+      render();
+
+      const spd = Number(speed.value); // 1 lento, 5 rápido
+      const tick = 120 - spd*15;        // ms
+      const base = 650 + (5-spd)*120;   // duración base
+
+      btn.disabled = true;
+
+      // animación escalonada
+      const p0 = spinReel(rEls[0], base, tick);
+      await sleep(120);
+      const p1 = spinReel(rEls[1], base + 220, tick);
+      await sleep(120);
+      const p2 = spinReel(rEls[2], base + 440, tick);
+
+      const [a,b,c] = await Promise.all([p0,p1,p2]);
+
+      const win = calcWin(a,b,c, wager);
+      balance += win;
+
+      if(win > 0){
+        setBadge("win","¡Ganaste!");
+        msg.innerHTML = `Resultado: <b>${a} ${b} ${c}</b> — Premio: <b>+${win}</b> 🪙`;
+      }else{
+        setBadge("lose","Nada");
+        msg.innerHTML = `Resultado: <b>${a} ${b} ${c}</b> — Mejor suerte la próxima.`;
+      }
+      lastWinEl.textContent = win.toString();
+
+      spinning = false;
+      render();
+    }
+
+    // --- Events ---
+    bet.addEventListener("input", render);
+    speed.addEventListener("input", render);
+    btn.addEventListener("click", spin);
+    resetBtn.addEventListener("click", () => {
+      balance = 100;
+      lastWinEl.textContent = "0";
+      setBadge(null,"Listo");
+      msg.innerHTML = "Saldo reiniciado. Inserta apuesta y pulsa <b>GIRAR</b>.";
+      render();
+    });
+
+    // init
+    render();
+  </script>
 </body>
 </html>
